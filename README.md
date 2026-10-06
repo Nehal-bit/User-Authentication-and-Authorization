@@ -9,9 +9,6 @@ This repository contains the source code and documentation for the User Authenti
 
 ## Getting Started
 
-### Prerequisites
-- [List your prerequisites here]
-
 ### Installation
 1. Clone the repository
    ```bash
