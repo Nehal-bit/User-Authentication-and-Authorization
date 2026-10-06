@@ -1,41 +1,13 @@
 # User Authentication and Authorization Service
 
-**Project ID:** P70  
-**Course:** UE23CS341A  
-**Academic Year:** 2025  
-**Semester:** 5th Sem  
-**Campus:** EC  
-**Branch:** CSE  
-**Section:** F  
-**Team:** SEe_project
-
-## 📋 Project Description
+## Project Description
 
 A centralized backend service to handle user registration, login, and role-based access control for multiple applications.
 
 This repository contains the source code and documentation for the User Authentication and Authorization Service project, developed as part of the UE23CS341A course at PES University.
 
-## 🧑‍💻 Development Team (SEe_project)
 
-- [@Nehal-bit](https://github.com/Nehal-bit) - Scrum Master
-- [@navyatavenkat15](https://github.com/navyatavenkat15) - Developer Team
-- [@sudhikshap](https://github.com/sudhikshap) - Developer Team
-- [@nehaharish2805](https://github.com/nehaharish2805) - Developer Team
-
-## 👨‍🏫 Teaching Assistant
-
-- [@itsjiyapatel](https://github.com/itsjiyapatel)
-- [@Greesh-SE](https://github.com/Greesh-SE)
-- [@Siri2512](https://github.com/Siri2512)
-- [@Hurry-sh](https://github.com/Hurry-sh)
-- [@pes2ug22cs137](https://github.com/pes2ug22cs137)
-
-## 👨‍⚖️ Faculty Supervisor
-
-- [@Animesh](https://github.com/Animesh)
-
-
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 - [List your prerequisites here]
@@ -71,7 +43,7 @@ PESU_EC_CSE_F_P70_User_Authentication_and_Authorization_Service_SEe-project/
 └── ...
 ```
 
-## 🛠️ Development Guidelines
+## Development Guidelines
 
 ### Branching Strategy
 - `main`: Production-ready code
@@ -95,7 +67,7 @@ Follow conventional commit format:
 4. Request review from team members
 5. Merge after approval
 
-## 📚 Documentation
+## Documentation
 
 - [API Documentation](docs/api.md)
 - [User Guide](docs/user-guide.md)
@@ -200,7 +172,7 @@ Developers may replicate CI checks using the following commands.
 pytest --cov
 
 
-## 🧪 Testing
+## Testing
 
 ```bash
 # Run tests
@@ -210,13 +182,4 @@ npm test
 npm run test:coverage
 ```
 
-## 📄 License
 
-This project is developed for educational purposes as part of the PES University UE23CS341A curriculum.
-
----
-
-**Course:** UE23CS341A  
-**Institution:** PES University  
-**Academic Year:** 2025  
-**Semester:** 5th Sem
