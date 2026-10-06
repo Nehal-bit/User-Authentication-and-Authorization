@@ -1,0 +1,15 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>UAAS Home</title>
+</head>
+<body>
+  <h1>Welcome to UAAS</h1>
+  <ul>
+  {% for opt in options %}
+    <li><a href="{{ opt.url }}">{{ opt.name }}</a></li>
+  {% endfor %}
+  </ul>
+</body>
+</html>

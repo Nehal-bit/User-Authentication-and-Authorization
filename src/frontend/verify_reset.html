@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Verify Reset OTP</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 40px;
+      max-width: 400px;
+      margin: auto;
+      background-color: #f3f6ff;
+    }
+    h2 {
+      color: #1d4ed8;
+      text-align: center;
+    }
+    p {
+      color: #444;
+      text-align: center;
+    }
+    label {
+      font-weight: bold;
+      color: #1e3a8a;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #b8c7ff;
+      border-radius: 6px;
+      background: #e8efff;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #1d4ed8;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    button:hover {
+      background-color: #1641b5;
+    }
+    #msg {
+      color: green;
+      margin-top: 15px;
+      text-align: center;
+    }
+    #error {
+      color: red;
+      margin-top: 15px;
+      text-align: center;
+    }
+    .link {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+    }
+    a {
+      color: #1d4ed8;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Verify OTP</h2>
+
+<p>A password reset OTP was sent to your email.</p>
+
+<label>Email</label>
+<input id="email" type="text" readonly>
+
+<label>OTP Code</label>
+<input id="otp" type="text" placeholder="Enter OTP">
+
+<button onclick="verifyOTP()">Verify OTP</button>
+
+<p id="msg"></p>
+<p id="error"></p>
+
+<p class="link">
+  <a href="login.html">Back to Login</a>
+</p>
+
+<script>
+  // Autofill saved email
+  document.getElementById("email").value =
+    localStorage.getItem("reset_email") || "";
+
+  async function verifyOTP() {
+    const email = document.getElementById("email").value;
+    const otp = document.getElementById("otp").value;
+
+    const res = await fetch("http://127.0.0.1:8000/auth/verify-reset-otp/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, otp })
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      document.getElementById("msg").innerText = "✅ OTP verified!";
+      document.getElementById("error").innerText = "";
+
+      setTimeout(() => {
+        window.location.href = "new_password.html";
+      }, 1500);
+    } else {
+      document.getElementById("error").innerText =
+        data.error || "Invalid OTP.";
+      document.getElementById("msg").innerText = "";
+    }
+  }
+</script>
+
+</body>
+</html>

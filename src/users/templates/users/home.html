@@ -1,0 +1,59 @@
+{% extends "users/base.html" %}
+
+{% block title %}UAAS Home{% endblock %}
+
+{% block styles %}
+<style>
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(to bottom right, #dce6ff, #bcd0ff);
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .container {
+    background: white;
+    padding: 40px;
+    width: 400px;
+    text-align: center;
+    border-radius: 18px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  }
+
+  h1 {
+    color: #1a3d7c;
+    font-size: 28px;
+    margin-bottom: 20px;
+  }
+
+  .btn {
+    display: block;
+    padding: 14px;
+    margin: 10px auto;
+    background: #1a3d7c;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    width: 80%;
+    font-size: 16px;
+    transition: 0.25s;
+  }
+
+  .btn:hover {
+    background: #153267;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h1>Welcome to UAAS</h1>
+
+  <a class="btn" href="{% url 'frontend-login' %}">Login</a>
+  <a class="btn" href="{% url 'frontend-register' %}">Register</a>
+  <a class="btn" href="{% url 'frontend-request-reset' %}">Forgot Password</a>
+</div>
+{% endblock %}

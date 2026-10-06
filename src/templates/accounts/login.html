@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>UAAS Login</title>
+
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom right, #d9e7ff, #b8d3ff);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+    }
+
+    .container {
+      background: white;
+      width: 380px;
+      padding: 30px 35px;
+      border-radius: 18px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+      text-align: center;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      color: #1a3d7c;
+      font-size: 26px;
+      letter-spacing: 0.5px;
+    }
+
+    label {
+      font-weight: bold;
+      float: left;
+      margin-top: 10px;
+      color: #1a3d7c;
+    }
+
+    input {
+      width: 100%;
+      padding: 11px;
+      margin-top: 6px;
+      background: #eef4ff;
+      border: 1px solid #b6c8e7;
+      border-radius: 6px;
+      transition: 0.2s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #4d8cff;
+      background: #e3ecff;
+      box-shadow: 0 0 4px rgba(77,140,255,0.4);
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 18px;
+      background: #3c6fe8;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #2f5ed1;
+    }
+
+    #error {
+      color: red;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+
+    .links {
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
+    .links a {
+      color: #2f5ed1;
+      text-decoration: none;
+    }
+
+    .links a:hover {
+      text-decoration: underline;
+    }
+  </style>
+
+</head>
+<body>
+
+  <div class="container">
+
+    <h1>Welcome Back</h1>
+
+    <label>Email</label>
+    <input id="email" type="text" placeholder="Enter your email">
+
+    <label>Password</label>
+    <input id="password" type="password" placeholder="Enter your password">
+
+    <button onclick="login()">Login</button>
+
+    <p id="error"></p>
+
+    <div class="links">
+      Don't have an account?
+      <a href="register.html">Register here</a>
+    </div>
+
+    <div class="links" style="margin-top: 8px;">
+      <a href="request_reset.html">Forgot Password?</a>
+    </div>
+
+  </div>
+
+  <script>
+    async function login() {
+      console.log("Login clicked");
+
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      const res = await fetch("http://127.0.0.1:8000/auth/login/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await res.json();
+      console.log("Login response:", data);
+
+      if (data.access) {
+        localStorage.setItem("access", data.access);
+        localStorage.setItem("role", data.role);
+
+        if (data.role === "ADMIN") {
+          window.location.href = "dashboard_admin.html";
+        } else {
+          window.location.href = "dashboard_user.html";
+        }
+      } else {
+        document.getElementById("error").innerText =
+          data.detail || "Invalid email or password";
+      }
+    }
+  </script>
+
+</body>
+</html>

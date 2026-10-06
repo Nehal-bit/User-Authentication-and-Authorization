@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>User Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #eef3ff;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+
+    .navbar {
+      background: #1d4ed8;
+      color: white;
+      padding: 15px;
+      font-size: 22px;
+      font-weight: bold;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+    }
+
+    .container {
+      width: 400px;
+      margin: 70px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    }
+
+    h2 {
+      color: #1d4ed8;
+      margin-bottom: 10px;
+    }
+
+    #userInfo {
+      font-size: 16px;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    button {
+      background: #1d4ed8;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 20px;
+      width: 60%;
+    }
+
+    button:hover {
+      background: #143aa8;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="navbar">UAAS User Dashboard</div>
+
+  <div class="container">
+    <h2>Welcome!</h2>
+
+    <p id="userInfo">Loading your info...</p>
+
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <script>
+    function logout() {
+      localStorage.removeItem("access");
+      localStorage.removeItem("role");
+      window.location.href = "login.html";
+    }
+
+    // ✅ Display email + role from localStorage if available
+    document.addEventListener("DOMContentLoaded", () => {
+      const token = localStorage.getItem("access");
+      const role = localStorage.getItem("role");
+
+      const infoBox = document.getElementById("userInfo");
+
+      if (!token) {
+        infoBox.innerText = "You are not logged in.";
+        return;
+      }
+
+      infoBox.innerHTML = `
+        <strong>Role:</strong> ${role || "USER"}<br>
+        <strong>Status:</strong> Logged In ✅
+      `;
+    });
+  </script>
+
+</body>
+</html>

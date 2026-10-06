@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Profile - UAAS{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card-form">
+            <h2 class="text-center mb-4">
+                <i class="fas fa-user-circle"></i> Your Profile
+            </h2>
+
+            <div class="profile-info">
+                <div class="mb-3 p-3 bg-light rounded">
+                    <h6 class="text-muted mb-1">Username</h6>
+                    <p class="mb-0">
+                        <i class="fas fa-user"></i> <strong>{{ user.username }}</strong>
+                    </p>
+                </div>
+
+                <div class="mb-3 p-3 bg-light rounded">
+                    <h6 class="text-muted mb-1">Email Address</h6>
+                    <p class="mb-0">
+                        <i class="fas fa-envelope"></i> <strong>{{ user.email }}</strong>
+                    </p>
+                </div>
+
+                <div class="mb-3 p-3 bg-light rounded">
+                    <h6 class="text-muted mb-1">Account Status</h6>
+                    <p class="mb-0">
+                        {% if user.is_active %}
+                            <i class="fas fa-check-circle" style="color: #28a745;"></i>
+                            <strong style="color: #28a745;">Active</strong>
+                        {% else %}
+                            <i class="fas fa-times-circle" style="color: #dc3545;"></i>
+                            <strong style="color: #dc3545;">Inactive</strong>
+                        {% endif %}
+                    </p>
+                </div>
+
+                <div class="mb-4 p-3 bg-light rounded">
+                    <h6 class="text-muted mb-1">Account Role</h6>
+                    <p class="mb-0">
+                        <i class="fas fa-shield-alt"></i> 
+                        <strong>
+                            {% if user.is_staff %}
+                                Administrator
+                            {% elif user.is_superuser %}
+                                Superuser
+                            {% else %}
+                                User
+                            {% endif %}
+                        </strong>
+                    </p>
+                </div>
+
+                <a href="{% url 'users:logout' %}" class="btn btn-danger w-100">
+                    <i class="fas fa-sign-out-alt"></i> Sign Out
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

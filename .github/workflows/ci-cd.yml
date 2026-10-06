@@ -1,0 +1,161 @@
+name: CI Pipeline (Week 1)
+
+on:
+  push:
+    branches: [main, develop, "feature/*"]
+  pull_request:
+    branches: [main]
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: uaas_test
+        ports:
+          - "3306:3306"
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=5s
+          --health-timeout=10s
+          --health-retries=5
+
+    steps:
+      # ----------------------------------------
+      #         ENV + DEPENDENCIES
+      # ----------------------------------------
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+
+      - name: Install Python Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-django coverage pytest-cov
+          pip install pylint pylint-django
+          pip install bandit safety==2.3.5
+
+      - name: Create CI .env file
+        run: |
+          echo "SECRET_KEY=testsecret" > src/.env
+          echo "DEBUG=True" >> src/.env
+          echo "DB_NAME=uaas_test" >> src/.env
+          echo "DB_USER=root" >> src/.env
+          echo "DB_PASSWORD=root" >> src/.env
+          echo "DB_HOST=127.0.0.1" >> src/.env
+          echo "DB_PORT=3306" >> src/.env
+          echo "ACCESS_TOKEN_MINUTES=5" >> src/.env
+          echo "REFRESH_TOKEN_DAYS=7" >> src/.env
+
+          # EMAIL SETTINGS (required)
+          echo "EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend" >> src/.env
+          echo "EMAIL_HOST=smtp.gmail.com" >> src/.env
+          echo "EMAIL_PORT=587" >> src/.env
+          echo "EMAIL_USE_TLS=True" >> src/.env
+          echo "EMAIL_HOST_USER=test@example.com" >> src/.env
+          echo "EMAIL_HOST_PASSWORD=dummypassword" >> src/.env
+          echo "DEFAULT_FROM_EMAIL=test@example.com" >> src/.env
+
+      - name: Wait for MySQL
+        run: |
+          until mysqladmin ping -h127.0.0.1 --silent; do
+            echo "Waiting for MySQL…"
+            sleep 2
+          done
+
+      - name: Apply Migrations
+        working-directory: src
+        run: python manage.py migrate --noinput
+
+      # ----------------------------------------
+      #             TEST + COVERAGE
+      # ----------------------------------------
+      - name: Run Tests with Coverage
+        run: |
+          python -m pytest \
+            --cov=users \
+            --cov=tokens \
+            --cov=authz \
+            --cov=audit \
+            --cov-report=xml \
+            --cov-report=html \
+            --cov-report=term-missing
+
+      - name: Enforce Minimum Coverage
+        run: |
+          coverage_int=$(python - << 'EOF'
+          import xml.etree.ElementTree as ET
+          tree = ET.parse('coverage.xml')
+          root = tree.getroot()
+          rate = float(root.attrib['line-rate'])
+          print(int(rate * 100))
+          EOF
+          )
+
+          echo "Coverage: $coverage_int%"
+
+          if [ "$coverage_int" -lt 60 ]; then
+            echo "❌ Coverage too low! Required: 60%, Got: $coverage_int%"
+            exit 1
+          else
+            echo "✅ Coverage meets minimum requirement."
+          fi
+
+      # ----------------------------------------
+      #                 LINTING
+      # ----------------------------------------
+      - name: Run Pylint
+        run: |
+          pylint src --exit-zero --output-format=text > pylint-report.txt
+
+          score=$(pylint --score=y src 2>/dev/null | tail -1 | awk '{print $7}' | sed 's/(//;s/)//')
+          echo "Pylint score: $score"
+
+          if (( $(echo "$score < 7.5" | bc -l) )); then
+            echo "❌ Lint score too low! Required: 7.5, Got: $score"
+            exit 1
+          else
+            echo "✅ Lint score OK."
+          fi
+
+      - name: Upload Pylint Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: pylint-report
+          path: pylint-report.txt
+
+      # ----------------------------------------
+      #            BANDIT SECURITY SCAN
+      # ----------------------------------------
+      - name: Run Bandit Scan
+        run: |
+          bandit -r src -f html -o bandit-report.html || true
+
+      - name: Upload Bandit Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: bandit-report
+          path: bandit-report.html
+
+      # ----------------------------------------
+      #            SAFETY SECURITY SCAN
+      # ----------------------------------------
+      - name: Run Safety Scan
+        run: |
+          safety check --json > safety-report.json
+
+
+      - name: Upload Safety Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: safety-report
+          path: safety-report.json
